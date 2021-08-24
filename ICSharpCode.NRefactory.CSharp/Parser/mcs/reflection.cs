@@ -209,17 +209,21 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 		public override ModuleBuilder CreateModuleBuilder ()
 		{
 			if (file_name == null)
+#if NET6_0
+				return Builder.DefineDynamicModule(Name);
+#else
 				return Builder.DefineDynamicModule (Name, false);
+#endif
 
 			return base.CreateModuleBuilder ();
 		}
 #endif
-		//
-		// Initializes the code generator
-		//
+				//
+				// Initializes the code generator
+				//
 		public bool Create (AppDomain domain, AssemblyBuilderAccess access)
 		{
-#if STATIC || FULL_AOT_RUNTIME
+#if STATIC || FULL_AOT_RUNTIME || NETCOREAPP
 			throw new NotSupportedException ();
 #else
 			ResolveAssemblySecurityAttributes ();
@@ -261,10 +265,12 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 				base.SaveModule (pekind, machine);
 			}
 
+#if !NETCOREAPP
 			Builder.Save (file_name, pekind, machine);
+#endif
 		}
 #endif
-	}
+		}
 
 	//
 	// Extension to System.Reflection.Emit.AssemblyBuilder to have fully compatible

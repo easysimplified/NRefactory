@@ -2766,7 +2766,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 				foreach (var de in declarative_security) {
 #if STATIC
 					TypeBuilder.__AddDeclarativeSecurity (de);
-#else
+#elif !NET6_0
 					TypeBuilder.AddDeclarativeSecurity (de.Key, de.Value);
 #endif
 				}
