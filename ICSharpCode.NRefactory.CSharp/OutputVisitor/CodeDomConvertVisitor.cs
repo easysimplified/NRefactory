@@ -16,6 +16,8 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+#if !NET6_0
+
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -1427,3 +1429,5 @@ namespace ICSharpCode.NRefactory.CSharp
 		}
 	}
 }
+
+#endif

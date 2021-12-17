@@ -462,7 +462,11 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 			// but returned ISymbolWriter does not have all what we need therefore some
 			// adaptor will be needed for now we alwayas emit MDB format when generating
 			// debug info
+#if NET6_0
+			return Builder.DefineDynamicModule(module_name);
+#else
 			return Builder.DefineDynamicModule (module_name, module_name, false);
+#endif
 		}
 
 		public virtual void Emit ()
@@ -787,11 +791,13 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 			//
 			// Add Win32 resources
 			//
+#if !NET6_0
 			if (Compiler.Settings.Win32ResourceFile != null) {
 				Builder.DefineUnmanagedResource (Compiler.Settings.Win32ResourceFile);
 			} else {
 				Builder.DefineVersionInfoResource (vi_product, vi_product_version, vi_company, vi_copyright, vi_trademark);
 			}
+#endif
 
 			if (Compiler.Settings.Win32IconFile != null) {
 				builder_extra.DefineWin32IconResource (Compiler.Settings.Win32IconFile);
@@ -819,9 +825,13 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 								stream = new MemoryStream (File.ReadAllBytes (res.FileName));
 							}
 
+#if !NET6_0
 							module.Builder.DefineManifestResource (res.Name, stream, res.Attributes);
+#endif
 						} else {
+#if !NET6_0
 							Builder.AddResourceFile (res.Name, Path.GetFileName (res.FileName), res.Attributes);
+#endif
 						}
 					}
 				}
@@ -871,7 +881,11 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 				if (Compiler.Settings.Target == Target.Module) {
 					SaveModule (pekind, machine);
 				} else {
+#if NET6_0
+					throw new NotSupportedException();
+#else
 					Builder.Save (module.Builder.ScopeName, pekind, machine);
+#endif
 				}
 			} catch (Exception e) {
 				Report.Error (16, "Could not write to file `" + name + "', cause: " + e.Message);
@@ -964,7 +978,9 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 				return;
 			}
 
+#if !NET6_0
 			Builder.SetEntryPoint (entry_point.MethodBuilder, file_kind);
+#endif
 		}
 
 		void Error_ObsoleteSecurityAttribute (Attribute a, string option)
@@ -1043,14 +1059,14 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 		public string FileName { get; private set; }
 		public bool IsEmbeded { get; set; }
 
-		#region IEquatable<AssemblyResource> Members
+#region IEquatable<AssemblyResource> Members
 
 		public bool Equals (AssemblyResource other)
 		{
 			return Name == other.Name;
 		}
 
-		#endregion
+#endregion
 	}
 
 	//
@@ -1258,4 +1274,16 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 			compiler.TimeReporter.Stop (TimeReporter.TimerType.ReferencesLoading);
 		}
 	}
-}
+
+#if NET6_0
+
+	enum PEFileKinds
+	{
+		Dll = 1,
+		ConsoleApplication = 2,
+		WindowApplication = 3
+	}
+
+#endif
+
+	}

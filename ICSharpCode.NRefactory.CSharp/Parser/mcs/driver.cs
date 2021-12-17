@@ -357,8 +357,10 @@ namespace ICSharpCode.NRefactory.MonoCSharp
 			if (!ctx.BuiltinTypes.CheckDefinitions (module))
 				return false;
 
+#if !NET6_0
 			if (!assembly.Create (AppDomain.CurrentDomain, AssemblyBuilderAccess.Save))
 				return false;
+#endif
 
 			module.CreateContainer ();
 

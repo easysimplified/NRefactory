@@ -711,7 +711,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 				foreach (var de in declarative_security) {
 #if STATIC
 					MethodBuilder.__AddDeclarativeSecurity (de);
-#else
+#elif !NET6_0
 					MethodBuilder.AddDeclarativeSecurity (de.Key, de.Value);
 #endif
 				}
@@ -1801,7 +1801,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 				foreach (var de in declarative_security) {
 #if STATIC
 					ConstructorBuilder.__AddDeclarativeSecurity (de);
-#else
+#elif !NET6_0
 					ConstructorBuilder.AddDeclarativeSecurity (de.Key, de.Value);
 #endif
 				}
@@ -1861,6 +1861,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 			if (debug_builder == null)
 				return;
 
+#if !NET6_0
 			var token = ConstructorBuilder.GetToken ();
 			int t = token.Token;
 #if STATIC
@@ -1869,9 +1870,10 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 #endif
 
 			debug_builder.DefineMethod (file, t);
+#endif
 		}
 
-		#region IMethodData Members
+#region IMethodData Members
 
 		public MemberName MethodName {
 			get {
@@ -1890,7 +1892,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 			throw new NotImplementedException ();
 		}
 
-		#endregion
+#endregion
 	}
 
 	/// <summary>
@@ -2191,6 +2193,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 			if (debug_builder == null)
 				return;
 
+#if !NET6_0
 			var token = builder.GetToken ();
 			int t = token.Token;
 #if STATIC
@@ -2199,6 +2202,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 #endif
 
 			debug_builder.DefineMethod (file, t);
+#endif
 		}
 	}
 
@@ -2337,7 +2341,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 			SetMemberName (SetupName (prefix, member, Location));
 		}
 
-		#region IMethodData Members
+#region IMethodData Members
 
 		public ToplevelBlock Block {
 			get {
@@ -2387,7 +2391,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 		public abstract ParametersCompiled ParameterInfo { get ; }
 		public abstract TypeSpec ReturnType { get; }
 
-		#endregion
+#endregion
 
 		public override void ApplyAttributeBuilder (Attribute a, MethodSpec ctor, byte[] cdata, PredefinedAttributes pa)
 		{
@@ -2454,7 +2458,7 @@ namespace ICSharpCode.NRefactory.MonoCSharp {
 				foreach (var de in declarative_security) {
 #if STATIC
 					method_data.MethodBuilder.__AddDeclarativeSecurity (de);
-#else
+#elif !NET6_0
 					method_data.MethodBuilder.AddDeclarativeSecurity (de.Key, de.Value);
 #endif
 				}
